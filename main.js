@@ -1,6 +1,9 @@
 const express = require('express')
 const {Server: HttpServer} =require('http')
 const {Server: IOServer} = require('socket.io')
+const {options} = require('./db/sqlite')
+
+const db = require('knex')(options)
 
 const app = express()
 const httpServer = new HttpServer(app)
@@ -19,7 +22,19 @@ const Contenedor = require('./contenedor.js')
 const contenedor = new Contenedor('mysql','productos')
 
 
-const messages = []
+//Creacion tabla para mensajes
+
+db.schema
+    .createTable('mensajes', table => {
+        table.string('user')
+        table.string('date',50)
+        table.string('text',255)
+})
+.then(()=> console.log('Tabla mensajes CREADA'))
+.catch(err => console.log(`Error: ${err.message}`))  
+
+
+
 app.get('/products', async (req,res) =>{
   const products = await contenedor.getAll()
 
@@ -65,7 +80,10 @@ io.on('connection', async (socket) => {
   const data = await contenedor.getAll()
   socket.emit('productos', data)
   
-  socket.emit('join', messages)
+  socket.emit('join',async () => {
+    const mensajes   = await knex.from(tabla).select('*')
+    return res.json(mensajes)
+  })
    
   socket.on('messageInput', data => {
 
@@ -77,16 +95,14 @@ io.on('connection', async (socket) => {
       text: data.text
     }
      
-    messages.push(message)
-    console.log(messages)
+    db('mensajes')
+    .insert(message)
+    .then(()=> console.log('Mensaje guardado'))
+    .catch(err => console.log(`Error: ${err.message}`))
+  
    socket.emit('myMessage', message)
     
     socket.broadcast.emit('message', message)
   })
 
 })
-
-
-
- 
-

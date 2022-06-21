@@ -29,36 +29,12 @@ class Contenedor{
     
 
    async save(object){
-       
-       
-    return knex(tabla)
+              
+    knex(tabla)
     .insert(object)
     .then(() => console.log('Producto insertado'))
     .catch(err => console.log(`Error: ${err.message}`))
-
-
-/* 
-
-        try{
-            data  = await fs.promises.readFile(`./${this.nombreArchivo}`, 'utf-8') //leo archivo
-            data = JSON.parse(data)
-        } catch (err) {
-            data = []
-        }
-
-        const lastProduct = data[data.length - 1] //conozco la posicion del ultimo elemento
-
-        let id = 1
-
-        if (lastProduct) { // si hay productos le sumo uno al id
-             id = lastProduct.id + 1
-        }
-        object.id = id
-
-        data.push(object) //agrego producto
-
-        return fs.promises.writeFile(`./${this.nombreArchivo}`, JSON.stringify(data, null, 2)) //save del producto nuevo
- */
+    
   }
     async update(object){
 
@@ -84,12 +60,7 @@ class Contenedor{
         return knex.from(tabla)
         .select('*')
         .where('id', '=', id)
-       /*  .then(products => {
-          console.log(`Total de productos: ${products.length}`)
-          products.forEach(product => console.log(`Producto: ${product.name} con precio de $${product.price}`))
-        })
-        .catch(err => console.log(`Error: ${err.message}`)) */
-
+ 
     }
  
     async getAll(){

@@ -6,6 +6,8 @@ const messageInput = document.getElementById('messageInput')
 const email = document.getElementById('email') 
 const messageContainer = document.getElementById('messageContainer')
 
+const {options} = require('./db/sqlite')
+const db = require('knex')(options)
 
 
 socket.on('productos', data =>{
@@ -29,7 +31,7 @@ socket.on('productos', data =>{
 
 socket.on('join', data =>{
  
-  const mensajes = data
+ return db.from(mensajes).select('*')
   .map(men => {
     const mensTemplate = `
     <span style = "color:blue; font-weight: bold">${men.user}</span><span style="color:brown"> ${men.date}:</span><span style ="color:green; font-style: italic"> ${men.text}</span><br>
