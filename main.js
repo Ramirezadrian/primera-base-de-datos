@@ -32,7 +32,7 @@ db.schema
 })
 .then(()=> console.log('Tabla mensajes CREADA'))
 .catch(err => console.log(`Error: ${err.message}`))  
-
+ 
 
 
 app.get('/products', async (req,res) =>{
@@ -78,10 +78,12 @@ io.on('connection', async (socket) => {
   console.log('Nuevo cliente conectado')
 
   const data = await contenedor.getAll()
+  console.log('Buscando productos desde base de datos productos')
+  console.log(data)
   socket.emit('productos', data)
   
   socket.emit('join',async () => {
-    const mensajes   = await knex.from(tabla).select('*')
+    const mensajes   = await db.from('mensajes').select('*')
     return res.json(mensajes)
   })
    
@@ -94,7 +96,7 @@ io.on('connection', async (socket) => {
       date: `${now.getDay()}/${now.getMonth()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`,
       text: data.text
     }
-     
+     console.log(message)
     db('mensajes')
     .insert(message)
     .then(()=> console.log('Mensaje guardado'))

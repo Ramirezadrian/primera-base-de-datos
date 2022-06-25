@@ -11,7 +11,8 @@ const db = require('knex')(options)
 
 
 socket.on('productos', data =>{
-
+  console.log('desde main.js recibo productos')
+console.log(data)
     const productos = data
    .map(prod => {
     const prodTemplate = `
@@ -31,7 +32,7 @@ socket.on('productos', data =>{
 
 socket.on('join', data =>{
  
- return db.from(mensajes).select('*')
+ data
   .map(men => {
     const mensTemplate = `
     <span style = "color:blue; font-weight: bold">${men.user}</span><span style="color:brown"> ${men.date}:</span><span style ="color:green; font-style: italic"> ${men.text}</span><br>
@@ -39,17 +40,19 @@ socket.on('join', data =>{
     return mensTemplate
   })
   .join('')
-  messageContainer.innerHTML = mensajes
+
+  console.log(data)
+  messageContainer.innerHTML = data
   
 })
 
-sendMessage.addEventListener('click', (e) => {
-  e.preventDefault()
+sendMessage.addEventListener('click', (event) => {
+  event.preventDefault()
  const message = {
    user: email.value,
    text :messageInput.value
  }
- 
+ console.log('Mensaje enviado')
   socket.emit('messageInput', message)
   messageInput.value = ''
 })
